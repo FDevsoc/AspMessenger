@@ -21,12 +21,22 @@ namespace Messenger.Controllers
         {
             return View();
         }
+
+        public IActionResult NotExist()
+        {
+            return View("NotExist");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index(User user)
         {
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            if (await db.Users.FirstOrDefaultAsync(p => p.Name == user.Name || p.Login == user.Login) == null)
+            {
+                db.Users.Add(user);
+                await db.SaveChangesAsync();
+                return Redirect("Home");
+            }
+            return NotExist();
         }
     }
 }

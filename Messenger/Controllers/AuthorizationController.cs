@@ -28,7 +28,7 @@ namespace Messenger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string? login, string password)
+        public async Task<IActionResult> Index(string login, string password)
         {
             if (login != null && password != null)
             {

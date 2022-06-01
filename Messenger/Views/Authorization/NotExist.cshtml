@@ -1,4 +1,4 @@
-@model Messenger.Models.User
+﻿@model Messenger.Models.User
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +14,7 @@
         <div id="form-container" class="form-container auth">
             <form asp-action="Index" asp-controller="Authorization" id="auth-form" class="form-container__form" method="post">
                 <fieldset class="form-container__input-field">
-                    <legend id="login-legend" class="form-container_fz">Логин</legend>
+                    <legend id="login-legend" class="form-container_fz">Логин (Пользователь не найден)</legend>
                     <input asp-for="Login" id="login" class="form-container__field" 
                         required 
                         pattern="^[a-zA-Z0-9][a-zA-Z0-9]{3,16}$"

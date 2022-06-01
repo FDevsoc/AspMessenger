@@ -20,8 +20,7 @@ let submitButton = document.getElementById('submit-button');
 let authForm = document.getElementById('auth-form');
 let formContainer = document.getElementById('form-container');
 
-let authHandler = 'Authorization';
-let registerHandler = 'Registration';
+let authHandler = '/Authorization';
 
 
 // Валидация формы

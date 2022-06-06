@@ -12,6 +12,7 @@ namespace Messenger.Controllers
     public class RegistrationController : Controller
     {
         ApplicationContext db;
+
         public RegistrationController(ApplicationContext context)
         {
             db = context;
@@ -34,7 +35,9 @@ namespace Messenger.Controllers
             {
                 db.Users.Add(user);
                 await db.SaveChangesAsync();
-                return Redirect("Home");
+
+                HttpContext.Response.Cookies.Append("User", $"{user.Login} {user.Password}");
+                return RedirectToAction("Index", "Main");
             }
             return NotExist();
         }

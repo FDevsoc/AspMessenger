@@ -12,6 +12,7 @@ namespace Messenger.Controllers
     public class AuthorizationController : Controller
     {
         ApplicationContext db;
+
         public AuthorizationController(ApplicationContext context)
         {
             db = context;
@@ -35,10 +36,11 @@ namespace Messenger.Controllers
                 User? user = await db.Users.FirstOrDefaultAsync(p => p.Login == login && p.Password == password);
                 if (user != null)
                 {
-                    // Заглушка
-                    return Redirect("Home");
+                    HttpContext.Response.Cookies.Append("User", $"{login} {password}");  
+                    return RedirectToAction("Index", "Main");
                 }
             }
+
             return NotExist();
         }
     }

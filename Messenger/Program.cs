@@ -37,4 +37,12 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Registration}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Authorization}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Main}/{action=Index}/{id?}");
+
 app.Run();

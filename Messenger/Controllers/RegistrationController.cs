@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Messenger.Models;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace Messenger.Controllers
 {
@@ -31,6 +33,9 @@ namespace Messenger.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(User user)
         {
+            user.Login = Hash(user.Login);
+            user.Password = Hash(user.Password);
+
             if (await db.Users.FirstOrDefaultAsync(p => p.Name == user.Name || p.Login == user.Login) == null)
             {
                 db.Users.Add(user);
@@ -40,6 +45,15 @@ namespace Messenger.Controllers
                 return RedirectToAction("Index", "Main");
             }
             return NotExist();
+        }
+
+        public string Hash(string data)
+        {
+            byte[] enc = Encoding.Default.GetBytes(data);
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            byte[] result = sha.ComputeHash(enc);
+            data = Convert.ToBase64String(result);
+            return data;
         }
     }
 }

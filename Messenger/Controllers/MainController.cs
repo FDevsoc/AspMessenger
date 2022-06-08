@@ -11,8 +11,8 @@ namespace Messenger.Controllers
 {
     public class MainController : Controller
     {
-        ApplicationContext db;
-        User? _user;
+        private ApplicationContext db;
+        private User? _user;
 
         public MainController(ApplicationContext context)
         {
@@ -28,13 +28,13 @@ namespace Messenger.Controllers
             ViewData["User"] = _user.Name;
 
             var messages = (from m in db.Messages
-                           where _user.Id == m.SenderId || _user.Id == m.ReceiverId
-                           select m).ToList();
+                            where _user.Id == m.SenderId || _user.Id == m.ReceiverId
+                            select m).ToList();
 
             ViewBag.Messages = messages.ToList();
 
             var dialogs = (from m in messages
-                          select m.DialogId).ToList();
+                           select m.DialogId).ToList();
 
             ViewBag.Dialogs = dialogs.Distinct().ToList();
 

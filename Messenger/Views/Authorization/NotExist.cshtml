@@ -1,0 +1,47 @@
+﻿@model Messenger.Models.User
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Вход</title>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container" class="form-container auth">
+            <form asp-action="Index" asp-controller="Authorization" id="auth-form" class="form-container__form" method="post">
+                <fieldset class="form-container__input-field">
+                    <legend id="login-legend" class="form-container_fz error">Логин (Неверный логин или пароль)</legend>
+                    <input asp-for="Login" id="login" class="form-container__field" 
+                        required 
+                        pattern="^[a-zA-Z0-9][a-zA-Z0-9]{3,16}$"
+                        minlength="4" maxlength="16" 
+                        placeholder="Ваш логин" 
+                        name="login"
+                    >
+                </fieldset>
+                <fieldset class="form-container__input-field">
+                    <legend id="password-legend" class="form-container_fz">Пароль</legend>
+                    <input asp-for="Password" id="pass" class="form-container__field" 
+                        required
+                        type="password"
+                        minlength="8" maxlength="24"
+                        pattern="^[a-zA-Zа-яА-Я0-9][a-zA-Zа-яА-Я0-9]{7,24}$"
+                        placeholder="Пароль" 
+                        name="password"
+                    >
+                </fieldset>
+                <div class="form-container__btn btn">
+                    <a href="Registration" id="additional-button" class="btn__item">Создать аккаунт</a>
+                    <input id="submit-button" class="btn__item" value="Вход" type="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

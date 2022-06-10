@@ -11,8 +11,8 @@ namespace Messenger.Controllers
 {
     public class MainController : Controller
     {
-        private ApplicationContext db;
-        private User? _user;
+        ApplicationContext db;
+        User? _user;
 
         public MainController(ApplicationContext context)
         {

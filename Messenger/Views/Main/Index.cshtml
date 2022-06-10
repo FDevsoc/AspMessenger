@@ -1,5 +1,85 @@
-﻿<h1>Имя пользователя: @ViewData["User"]</h1>
+﻿<!Doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="/css/main.css" rel="stylesheet">
+    <title>Мессенджер</title>
+  </head>
+  <body>
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-12 col-md-4 d-md-block friend-m " id="friendMenu">
+                    <form class="pt input-group dropdown mb-3 search">
+                        <input type="search"  class="form-control border-bottom border-2 border-primary" placeholder="Найти собеседника:" aria-label="Search"
+                          aria-describedby="search-addon" />
+                        <button class="btn  border-0 dropdown-toggle-split" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                          <img src="img/search.png" width="20" height="20" alt="Найти"/>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-dark w-100" aria-labelledby="dropdownMenu2">
+                          <a class="dropdown-item" href="#"></a>
+                         </div>
+                      </form>
+                      <div class="friend-win d-flex flex-column" id="dialog">
+                        <div class="cont" id="subtext">
+                          <p class="mb f-text text-w">Нет созданных</p>
+                          <p class="f-text text-w">диалогов</p>
+                        </div>
+                      </div>
+                      <div class="user-info   border-top border-2 border-primary">
+                          <div class="row g-0 info-btn">
+                            <div class="col-10 col-md-9 user-name text-w">@ViewData["User"]</div>
+                            <div class="col-1 col-md-1 exit-btn-cont ">
+                              <button class="btn exit-btn"><img src="img/exit.png" width="30" height="30" alt="Выйти"/></button>
+                            </div>
+                          </div>  
+                      </div>
+                </div>
+                <div class="col-12 col-md-8 d-none d-md-block chat-win" id="chatWin">
+                  <div class="subt" id="subtextWin">
+                    <p class="title-text text-w">Добро пожаловать!</p>
+                    <p class="t-text text-w">Найдите себе собеседника</p>
+                  </div>
+                  <div class="dialog-win d-none" id="DialogWin">
+                    <div class="row">
+                      <div class="col-12 col-md-12 dialog-head border-2 border-bottom border-primary">
+                        <div class="row">
+                          <button class="col-1 d-md-none  btn backArrow" id="backBtn">
+                            <img src="img/left.png" width="30" height="30" alt="Назад">
+                          </button>
+                          <label class="col-10 col-md-12 text dialogName align-middle" id="dialog-info">Нет</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-12 dialog-body">
+                        <div class="MessagesWin d-flex flex-column" id="messengeWin">
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-12 border-2 border-top border-primary">
+                        <div class="container footChat">
+                          <div class="row contforInp">
+                            <div class="col-10 contText">
+                              <textarea class="form-control textdialog" placeholder="Введите сообщение:" id="usertext" rows="3"></textarea>
+                            </div>
+                            <div class="col-2 sendBtn">
+                              <button class="btn " id="sendMessange"> 
+                                <img src="img/send.png" width="30" height="30" alt="Отправить"/>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    <script src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  </body>
+</html>
 
+@*
 @foreach (var dialogId in @ViewBag.Dialogs) 
 {
 	<p>Id диалога: @dialogId</p>
@@ -10,4 +90,4 @@
 			<p>@message.Text</p>
 		}
 	}
-}
+}*@

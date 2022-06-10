@@ -11,8 +11,8 @@ namespace Messenger.Controllers
 {
     public class MainController : Controller
     {
-        private ApplicationContext db;
-        private User? _user;
+        ApplicationContext db;
+        User? _user;
 
         public MainController(ApplicationContext context)
         {
@@ -21,6 +21,9 @@ namespace Messenger.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Request.Cookies["User"] == null)
+                return RedirectToAction("Index", "Home");
+
             // Получаем авторизованного пользователя
             GetUser();
 

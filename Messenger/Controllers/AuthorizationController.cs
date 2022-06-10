@@ -41,7 +41,8 @@ namespace Messenger.Controllers
                 User? user = await db.Users.FirstOrDefaultAsync(p => p.Login == login && p.Password == password);
                 if (user != null)
                 {
-                    HttpContext.Response.Cookies.Append("User", $"{login} {password}");  
+                    HttpContext.Response.Cookies.Append("User", $"{login} {password}");
+
                     return RedirectToAction("Index", "Main");
                 }
             }

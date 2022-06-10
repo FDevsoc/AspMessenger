@@ -21,6 +21,9 @@ namespace Messenger.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Request.Cookies["User"] == null)
+                return RedirectToAction("Index", "Home");
+
             // Получаем авторизованного пользователя
             GetUser();
 

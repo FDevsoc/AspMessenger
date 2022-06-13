@@ -22,16 +22,32 @@
                          </div>
                       </form>
                       <div class="friend-win d-flex flex-column" id="dialog">
-                        <div class="cont" id="subtext">
-                          <p class="mb f-text text-w">Нет созданных</p>
-                          <p class="f-text text-w">диалогов</p>
-                        </div>
+                        @if (@ViewBag.Dialogs.Count == 0)
+                        {
+                            <div class="cont" id="subtext">
+                              <p class="mb f-text text-w">Нет созданных</p>
+                              <p class="f-text text-w">диалогов</p>
+                          </div>
+                        } 
+                        else
+                        {
+                            @foreach (var friend in @ViewBag.FriendList) 
+                            {
+                                <div class="card userCard text-white bg-dark shadow">
+                                  <div class="card-body rey">
+                                    <h5 class="card-title">@friend</h5>
+                                  </div>
+                                </div>
+                            }
+                        }
                       </div>
-                      <div class="user-info   border-top border-2 border-primary">
+                      <div class="user-info border-top border-2 border-primary">
                           <div class="row g-0 info-btn">
                             <div class="col-10 col-md-9 user-name text-w">@ViewData["User"]</div>
                             <div class="col-1 col-md-1 exit-btn-cont ">
-                              <button class="btn exit-btn"><img src="img/exit.png" width="30" height="30" alt="Выйти"/></button>
+                              <a href="Home" class="btn exit-btn">
+                                  <img src="/img/exit.png" width="30" height="30" alt="Выйти"/>
+                              </a>
                             </div>
                           </div>  
                       </div>
@@ -48,26 +64,36 @@
                           <button class="col-1 d-md-none  btn backArrow" id="backBtn">
                             <img src="img/left.png" width="30" height="30" alt="Назад">
                           </button>
-                          <label class="col-10 col-md-12 text dialogName align-middle" id="dialog-info">Нет</label>
+                          <label class="col-10 col-md-12 text dialogName align-middle" id="dialog-info"></label>
                         </div>
                       </div>
                       <div class="col-12 col-md-12 dialog-body">
-                        <div class="MessagesWin d-flex flex-column" id="messengeWin">
+                        <div id="messengeWin" class="MessagesWin d-flex flex-column">
+                            @foreach (var message in @ViewBag.Messages)
+                            {
+                                <div class="card mb-3 text-white senderBox bg-transp">
+                                    <div class="card-body reqsforChat">
+                                        <div class="card-text text-white text-start">@message.Text</div>
+                                        <div class="label text-end labelData small">@message.SendDate.ToShortTimeString()</div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                       </div>
                       <div class="col-12 col-md-12 border-2 border-top border-primary">
                         <div class="container footChat">
                           <div class="row contforInp">
-                            <div class="col-10 contText">
+                            <div class="col-9 col-md-10 contText">
                               <textarea class="form-control textdialog" placeholder="Введите сообщение:" id="usertext" rows="3"></textarea>
                             </div>
-                            <div class="col-2 sendBtn">
-                              <button class="btn " id="sendMessange"> 
-                                <img src="img/send.png" width="30" height="30" alt="Отправить"/>
+                            <div class="col-3 col-md-2 ">
+                              <button class="btn" id="sendMessange"> 
+                                <img src="/img/send.png" width="30" height="30" alt="Отправить"/>
                               </button>
                             </div>
                           </div>
                         </div>
+                      </div>
                       </div>
                     </div>
                   </div>
@@ -80,14 +106,27 @@
 </html>
 
 @*
-@foreach (var dialogId in @ViewBag.Dialogs) 
-{
-	<p>Id диалога: @dialogId</p>
-	@foreach (var message in @ViewBag.Messages)
-	{
-		if (@message.DialogId == @dialogId)
-		{
-			<p>@message.Text</p>
-		}
-	}
-}*@
+   @foreach (var dialogId in @ViewBag.Dialogs) 
+   {
+        <p>Id диалога: @dialogId</p>
+        @foreach (var message in @ViewBag.Messages)
+        {
+        	if (@message.DialogId == @dialogId)
+        	{
+        		<p>@message.Text</p>
+        	}
+        }
+   }
+*@
+
+@*
+    @foreach (var message in @ViewBag.Messages)
+    {
+        <div class="card mb-3 text-white senderBox bg-transp">
+            <div class="card-body reqsforChat">
+                <div class="card-text text-white text-start">@message.Text</div>
+                <div class="label text-end labelData small">@message.SendDate.ToShortTimeString()</div>
+            </div>
+        </div>
+    }
+*@

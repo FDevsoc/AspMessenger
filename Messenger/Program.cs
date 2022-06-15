@@ -63,6 +63,4 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<ChatHub>("MainChat");
 });
 
-//app.UseSignalR(routes => { routes.MapHub<ChatHub>("chatter"); });
-
 app.Run();

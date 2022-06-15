@@ -1,8 +1,14 @@
 var currentUser;
-
 var Messages = [];
-
 var userFriends = [];
+
+//Элементы окн(диалогов,чата и текст-арии)
+var friend = document.getElementById('friendMenu');
+var dialog_win = document.getElementById('DialogWin');
+var textMess = document.getElementById('usertext');
+
+//Контейнер для сообщений
+var dialogContainer;
 
 /*userName = document.getElementById("username");*/
 
@@ -20,33 +26,25 @@ hubConnection.on('GetData', function (currentClient, messages, friendList) {
 // отправка сообщения на сервер
 function GetUserData() {
     let userName = document.getElementById("username");
-    hubConnection.invoke("GetData", userName.innerHTML);
+    setTimeout(function () { hubConnection.invoke("GetData", userName.innerHTML) }, 300);
+}
+
+function SendData(message) {
+    setTimeout(function () { hubConnection.invoke("SendData", currentUser, message); }, 300);
 }
 
 hubConnection.start();
 
-//Элементы окн(диалогов,чата и текст-арии)
-var friend = document.getElementById('friendMenu');
-var dialog_win = document.getElementById('DialogWin');
-var textMess = document.getElementById('usertext');
-//Контейнер для сообщений
-var dialogContainer;
+GetUserData();
 
 //метод выполняемый при загрузки всего dom'а и ресурсов
-window.onload = Start();
-
+Start();
 
 //метод добавления диалогам  прослушивания событий
 function Start() {
     //массив карточек
     var user_card = document.getElementsByClassName('userCard');
     if (user_card) {
-        Array.from(user_card).forEach(u_card => {
-            u_card.addEventListener('mouseover', function () {
-                GetUserData();
-            })
-        })
-
         //перебор карточек и добавление каждой прослушки
         Array.from(user_card).forEach(u_card => {
             u_card.addEventListener('click', function () {
@@ -84,7 +82,7 @@ function ShowMessangesWin(Username) {
     var chatbox = document.getElementById('chatWin');
     chatbox.classList.remove("d-none");
     document.getElementById('dialog-info').innerText = Username;
-    var thisFriendMessangesFromDate = [];
+
     UpdateMess(Username);
 }
 
@@ -133,15 +131,14 @@ function SendMessange() {
         //Проверка на то что сообщение не пустое
         if (textMess.value) {
             //формирование сообщения
-            message = { Id: 0, Text: textMess.value, SendDate: nowdate, SenderId: currentUser.id, ReceiverId: recId, DialogId: 0};
-            hubConnection.invoke("SendData", currentUser, message);
+            message = { Id: 0, Text: textMess.value, SendDate: nowdate, SenderId: currentUser.id, ReceiverId: recId, DialogId: 0 };
+            SendData(message);
         }
     }
 
     // Очистка поля ввода сообщения после нажатия на кнопку
     textMess.value = "";
-    // Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
-    document.getElementById('messengeWin').block("end");
+
     UpdateMess(reciverName);
 }
 //Функция создания карточек сообщений(разные стили)
@@ -227,4 +224,7 @@ function UpdateMess(Username) {
         }
     })
     initMessange(thisFriendMessanges);
+
+    // Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
+    document.getElementById('messengeWin').scrollIntoView(false);
 };

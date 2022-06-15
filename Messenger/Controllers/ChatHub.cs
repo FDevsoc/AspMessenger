@@ -6,12 +6,10 @@ namespace Messenger.Controllers
 {
     public class ChatHub : Hub
     {
-        HttpContext _httpContext;
         ApplicationContext db;
 
-        public ChatHub(HttpContext httpContext, ApplicationContext context)
+        public ChatHub(ApplicationContext context)
         {
-            _httpContext = httpContext;
             db = context;
         }
 
@@ -28,7 +26,7 @@ namespace Messenger.Controllers
             var friendList = GetFriends(currentClient.Id, messages);
 
 
-            await Clients.All.SendAsync("GetData", currentClient, messages, friendList);
+            await Clients.Client(Context.ConnectionId).SendAsync("GetData", currentClient, messages, friendList);
         }
 
         List<Client> GetFriends(int userId, List<Message> messages)

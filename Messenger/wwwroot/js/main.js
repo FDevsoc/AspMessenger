@@ -4,7 +4,7 @@ var Messages = [];
 
 var userFriends = [];
 
-userName = document.getElementById("username");
+/*userName = document.getElementById("username");*/
 
 const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl("MainChat")
@@ -18,8 +18,10 @@ hubConnection.on('GetData', function (currentClient, messages, friendList) {
 });
 
 // отправка сообщения на сервер
-var searchBtn = document.getElementById("dropdownMenu2");
-searchBtn.onclick = () => hubConnection.invoke("GetData", userName);
+document.getElementById("dropdownMenu2").addEventListener("click", function (e) {
+    let userName = document.getElementById("username");
+    hubConnection.invoke("GetData", userName.innerHTML);
+});
 
 hubConnection.start();
 

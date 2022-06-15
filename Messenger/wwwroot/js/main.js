@@ -34,6 +34,8 @@ var dialogContainer;
 
 //метод выполняемый при загрузки всего dom'а и ресурсов
 window.onload = Start();
+
+
 //метод добавления диалогам  прослушивания событий
 function Start() {
     //массив карточек
@@ -75,6 +77,8 @@ function Start() {
         })
     }
 }
+
+
 //метод просто отображения окна сообщений
 function ShowMessangesWin(Username) {
     var chatbox = document.getElementById('chatWin');
@@ -83,6 +87,8 @@ function ShowMessangesWin(Username) {
     var thisFriendMessangesFromDate = [];
     UpdateMess(Username);
 }
+
+
 //Кнопка "назад" (для мобилки)
 var backButt = document.getElementById('backBtn');
 //обработчик события на нажатие кнопки "назад"
@@ -90,10 +96,13 @@ backButt.onclick = function () {
     dialog_win.classList.add("d-none");
     friend.classList.remove("d-none");
 }
+
+
 //Кнопка "Отправить сообщение"
 var sendBtn = document.getElementById('sendMessange');
 //Обработчик кнопки "Отправить сообщение"
 sendBtn.addEventListener('click', SendMessange);
+
 
 //функция выполняемая при нажатие на кнопку "Отправить сообщение"
 function SendMessange() {
@@ -124,16 +133,15 @@ function SendMessange() {
         //Проверка на то что сообщение не пустое
         if (textMess.value) {
             //формирование сообщения
-            message = { Id: 0, Text: textMess.value, SendDate: nowdate, SenderId: currentUser.id, ReceiverId: recId, DialogId: 2};
+            message = { Id: 0, Text: textMess.value, SendDate: nowdate, SenderId: currentUser.id, ReceiverId: recId, DialogId: 0};
             hubConnection.invoke("SendData", currentUser, message);
         }
     }
-    // Добавление в массив сообщений(можно изменить куда что как сохранятся будет)
-    // Messages.push(message);
+
     // Очистка поля ввода сообщения после нажатия на кнопку
     textMess.value = "";
     // Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
-    document.getElementById('messengeWin').scrollIntoView(false);
+    document.getElementById('messengeWin').block("end");
     UpdateMess(reciverName);
 }
 //Функция создания карточек сообщений(разные стили)

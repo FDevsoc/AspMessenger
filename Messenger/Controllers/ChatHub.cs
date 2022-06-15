@@ -31,6 +31,24 @@ namespace Messenger.Controllers
 
         public async Task SendData(Client currentClient, Message message)
         {
+            message.DialogId = (from m in db.Messages
+                               where (m.SenderId == message.SenderId && m.ReceiverId == message.ReceiverId) ||
+                                     ((m.SenderId == message.ReceiverId && m.ReceiverId == message.SenderId))
+                               select m.DialogId).FirstOrDefault();
+
+            if (message.DialogId == 0)
+            {
+                var newDialog = new Dialog(0, $"{message.SenderId} - {message.ReceiverId}");
+                db.Dialogs.Add(newDialog);
+                db.SaveChanges();
+
+                message.DialogId = (from d in db.Dialogs
+                                   where d.Name == $"{message.SenderId} - {message.ReceiverId}"
+                                   select d.Id).FirstOrDefault();
+            }
+
+            message.SendDate = DateTime.Now;
+            
             db.Messages.Add(message);
             db.SaveChanges();
 

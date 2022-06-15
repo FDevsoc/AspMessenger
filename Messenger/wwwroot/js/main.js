@@ -18,10 +18,10 @@ hubConnection.on('GetData', function (currentClient, messages, friendList) {
 });
 
 // отправка сообщения на сервер
-document.getElementById("dropdownMenu2").addEventListener("click", function (e) {
+function GetUserData() {
     let userName = document.getElementById("username");
     hubConnection.invoke("GetData", userName.innerHTML);
-});
+}
 
 hubConnection.start();
 
@@ -39,6 +39,12 @@ function Start() {
     //массив карточек
     var user_card = document.getElementsByClassName('userCard');
     if (user_card) {
+        Array.from(user_card).forEach(u_card => {
+            u_card.addEventListener('mouseover', function () {
+                GetUserData();
+            })
+        })
+
         //перебор карточек и добавление каждой прослушки
         Array.from(user_card).forEach(u_card => {
             u_card.addEventListener('click', function () {
@@ -95,9 +101,9 @@ function SendMessange() {
     //id пользователя которому отправляется сообщение
     var recId = 0;
     Array.from(userFriends).forEach(userFr => {
-        if (userFr.Name === document.getElementById('dialog-info').innerHTML) {
-            recId = userFr.Id;
-            reciverName = userFr.Name;
+        if (userFr.name === document.getElementById('dialog-info').innerHTML) {
+            recId = userFr.id;
+            reciverName = userFr.name;
         }
     })
     //name пользователя которому отправляется сообщение
@@ -109,12 +115,15 @@ function SendMessange() {
         //Получаем из этой инфы только текущие часы и минуты
         var hrs = nowdate.getHours();
         var min = nowdate.getMinutes();
+
+        if (hrs < 10) hrs = "0" + hrs;
+        if (min < 10) min = "0" + min;
         //Записываем их в строку
         let timesend = hrs + ":" + min;
         //Проверка на то что сообщение не пустое
         if (textMess.value) {
             //формирование сообщения
-            messange = { Id: 1, Text: textMess.value, SendData: timesend, SenderId: currentUser.Id, ReceiverId: recId, DialogId: 7 };
+            messange = { id: 1, text: textMess.value, sendDate: timesend, senderId: currentUser.id, receiverId: recId, dialogId: Messages[0].dialogId };
         }
     }
     //Добавление в массив сообщений(можно изменить куда что как сохранятся будет)
@@ -127,7 +136,7 @@ function SendMessange() {
 }
 //Функция создания карточек сообщений(разные стили)
 function CreateMessage(Message) {
-    if (currentUser.Id === Message.SenderId) {
+    if (currentUser.id === Message.senderId) {
         let card = document.createElement('div');
         card.className = 'card mb-3 text-white senderBox bg-primary ';
 
@@ -135,11 +144,14 @@ function CreateMessage(Message) {
         cardBody.className = 'card-body';
 
         let text = document.createElement('div');
-        text.innerText = Message.Text;
+        text.innerText = Message.text;
         text.className = 'card-text text-start ';
 
         let footer = document.createElement('div');
-        footer.innerText = Message.SendData;
+        if (Message.sendDate.length > 5) {
+            Message.sendDate = Message.sendDate.substring(11, 16);
+        }
+        footer.innerText = Message.sendDate;
         footer.className = 'label text-end labelData small ';
 
 
@@ -155,11 +167,14 @@ function CreateMessage(Message) {
         cardBody.className = 'card-body';
 
         let text = document.createElement('div');
-        text.innerText = Message.Text;
+        text.innerText = Message.text;
         text.className = 'card-text text-start';
 
         let footer = document.createElement('div');
-        footer.innerText = Message.SendData;
+        if (Message.sendDate.length > 5) {
+            Message.sendDate = Message.sendDate.substring(11, 16);
+        }
+        footer.innerText = Message.sendDate;
         footer.className = 'label text-muted text-end labelData small';
 
         cardBody.appendChild(text);
@@ -193,14 +208,11 @@ function UpdateMess(Username) {
     var thisFriendMessanges = [];
     Array.from(Messages).forEach(Mess => {
         for (var i = 0; userFriends.length > i; i++) {
-            if (userFriends[i].Name === Username) {
-                if (userFriends[i].Id === Mess.ReceiverId || userFriends[i].Id === Mess.SenderId) {
-                    if (currentUser.Id === Mess.ReceiverId || currentUser.Id === Mess.SenderId) {
-                        thisFriendMessanges.push(Mess);
-                    }
-
-                }
-
+            if ((userFriends[i].name === Username) && 
+                (userFriends[i].id === Mess.receiverId || userFriends[i].id === Mess.senderId) &&
+                (currentUser.id === Mess.receiverId || currentUser.id === Mess.senderId))
+            {
+                thisFriendMessanges.push(Mess);
             }
         }
     })

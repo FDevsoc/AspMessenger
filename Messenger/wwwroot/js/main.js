@@ -93,13 +93,14 @@ backButt.onclick = function () {
 //Кнопка "Отправить сообщение"
 var sendBtn = document.getElementById('sendMessange');
 //Обработчик кнопки "Отправить сообщение"
-sendBtn.addEventListener('click', SendMessange)
+sendBtn.addEventListener('click', SendMessange);
+
 //функция выполняемая при нажатие на кнопку "Отправить сообщение"
 function SendMessange() {
     //Хранилище для сообщения которое набрали
-    var messange = {};
+    var message = {};
     //id пользователя которому отправляется сообщение
-    var recId = 0;
+    var recId = null;
     Array.from(userFriends).forEach(userFr => {
         if (userFr.name === document.getElementById('dialog-info').innerHTML) {
             recId = userFr.id;
@@ -109,7 +110,7 @@ function SendMessange() {
     //name пользователя которому отправляется сообщение
     var reciverName;
     //Проверка на то что сообщение кому то вообще адресовано(переписать под ваш лад)
-    if (recId != 0) {
+    if (recId != null) {
         //Получаем текущее время в формате(вся инфа)
         var nowdate = new Date();
         //Получаем из этой инфы только текущие часы и минуты
@@ -123,14 +124,15 @@ function SendMessange() {
         //Проверка на то что сообщение не пустое
         if (textMess.value) {
             //формирование сообщения
-            messange = { id: 1, text: textMess.value, sendDate: timesend, senderId: currentUser.id, receiverId: recId, dialogId: Messages[0].dialogId };
+            message = { Id: 0, Text: textMess.value, SendDate: nowdate, SenderId: currentUser.id, ReceiverId: recId, DialogId: 2};
+            hubConnection.invoke("SendData", currentUser, message);
         }
     }
-    //Добавление в массив сообщений(можно изменить куда что как сохранятся будет)
-    Messages.push(messange);
-    //Очистка поля ввода сообщения после нажатия на кнопку
+    // Добавление в массив сообщений(можно изменить куда что как сохранятся будет)
+    // Messages.push(message);
+    // Очистка поля ввода сообщения после нажатия на кнопку
     textMess.value = "";
-    //Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
+    // Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
     document.getElementById('messengeWin').scrollIntoView(false);
     UpdateMess(reciverName);
 }

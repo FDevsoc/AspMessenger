@@ -29,6 +29,14 @@ namespace Messenger.Controllers
             await Clients.Client(Context.ConnectionId).SendAsync("GetData", currentClient, messages, friendList);
         }
 
+        public async Task SendData(Client currentClient, Message message)
+        {
+            db.Messages.Add(message);
+            db.SaveChanges();
+
+            await GetData(currentClient.Name);
+        }
+
         List<Client> GetFriends(int userId, List<Message> messages)
         {
             var senderList = (from m in messages

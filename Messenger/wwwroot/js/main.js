@@ -1,11 +1,34 @@
-//Ненужный пользователь
-var Users = [/*{Id:1,Name:"Sque"},{Id:2,Name:"Loh"}*/];
-//Хранить сообщения, но можно удалить 
+var currentUser;
+
 var Messages = [];
+
+var userFriends = [];
+
+userName = document.getElementById("username");
+
+const hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl("MainChat")
+    .build();
+
+// получение сообщения от сервера
+hubConnection.on('GetData', function (currentClient, messages, friendList) {
+    currentUser = currentClient;
+    Messages = messages;
+    userFriends = friendList;
+});
+
+// отправка сообщения на сервер
+var searchBtn = document.getElementById("dropdownMenu2");
+searchBtn.onclick = () => hubConnection.invoke("GetData", userName);
+
+hubConnection.start();
+
 //Элементы окн(диалогов,чата и текст-арии)
 var friend = document.getElementById('friendMenu');
 var dialog_win = document.getElementById('DialogWin');
 var textMess = document.getElementById('usertext');
+//Контейнер для сообщений
+var dialogContainer;
 
 //метод выполняемый при загрузки всего dom'а и ресурсов
 window.onload = Start();
@@ -27,9 +50,6 @@ function Start() {
                 var ch = u_card.firstElementChild;
                 u_card.classList.add('border-primary');
                 ch.classList.add("bushcard");
-
-                var username = u_card.lastElementChild.innerHTML;
-
                 //удаляем стиль "активной" у остальных других, если такие имеются
                 for (var i = 0; user_card.length > i; i++) {
                     var fItem = user_card[i].classList;
@@ -42,18 +62,18 @@ function Start() {
                     }
                 }
                 //Отображем окно сообщения(для мобилки)
-                ShowMessangesWin(username);
+                ShowMessangesWin(ch.firstElementChild.innerText);
             })
         })
     }
 }
 //метод просто отображения окна сообщений
-function ShowMessangesWin(username) {
+function ShowMessangesWin(Username) {
     var chatbox = document.getElementById('chatWin');
     chatbox.classList.remove("d-none");
-
-    var dialog = document.getElementById('dialog-info');
-    dialog.innerHTML = username;
+    document.getElementById('dialog-info').innerText = Username;
+    var thisFriendMessangesFromDate = [];
+    UpdateMess(Username);
 }
 //Кнопка "назад" (для мобилки)
 var backButt = document.getElementById('backBtn');
@@ -72,6 +92,12 @@ function SendMessange() {
     var messange = {};
     //id пользователя которому отправляется сообщение
     var recId = 0;
+    Array.from(userFriends).forEach(userFr => {
+        if (userFr.Name === document.getElementById('dialog-info').innerHTML) {
+            recId = userFr.Id;
+            reciverName = userFr.Name;
+        }
+    })
     //name пользователя которому отправляется сообщение
     var reciverName;
     //Проверка на то что сообщение кому то вообще адресовано(переписать под ваш лад)
@@ -82,13 +108,11 @@ function SendMessange() {
         var hrs = nowdate.getHours();
         var min = nowdate.getMinutes();
         //Записываем их в строку
-        if (hrs < 10) hrs = "0" + hrs;
-        if (min < 10) min = "0" + min;
         let timesend = hrs + ":" + min;
         //Проверка на то что сообщение не пустое
         if (textMess.value) {
             //формирование сообщения
-            messange = { Text: textMess.value, SendData: timesend, SenderId: user.Id, ReceiverId: recId};
+            messange = { Id: 1, Text: textMess.value, SendData: timesend, SenderId: currentUser.Id, ReceiverId: recId, DialogId: 7 };
         }
     }
     //Добавление в массив сообщений(можно изменить куда что как сохранятся будет)
@@ -97,4 +121,86 @@ function SendMessange() {
     textMess.value = "";
     //Задает скролл листа сообщений таким образом что при добавлении скрол сам будет опускаться вниз
     document.getElementById('messengeWin').scrollIntoView(false);
+    UpdateMess(reciverName);
 }
+//Функция создания карточек сообщений(разные стили)
+function CreateMessage(Message) {
+    if (currentUser.Id === Message.SenderId) {
+        let card = document.createElement('div');
+        card.className = 'card mb-3 text-white senderBox bg-primary ';
+
+        let cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+
+        let text = document.createElement('div');
+        text.innerText = Message.Text;
+        text.className = 'card-text text-start ';
+
+        let footer = document.createElement('div');
+        footer.innerText = Message.SendData;
+        footer.className = 'label text-end labelData small ';
+
+
+        cardBody.appendChild(text);
+        cardBody.appendChild(footer);
+        card.appendChild(cardBody);
+        dialogContainer.appendChild(card);
+    } else {
+        let card = document.createElement('div');
+        card.className = 'card mb-3 text-white bg-dark reciverBox ';
+
+        let cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+
+        let text = document.createElement('div');
+        text.innerText = Message.Text;
+        text.className = 'card-text text-start';
+
+        let footer = document.createElement('div');
+        footer.innerText = Message.SendData;
+        footer.className = 'label text-muted text-end labelData small';
+
+        cardBody.appendChild(text);
+        cardBody.appendChild(footer);
+        card.appendChild(cardBody);
+        dialogContainer.appendChild(card);
+    }
+};
+
+
+function initMessange(Message) {
+    if (dialogContainer) {
+        document.getElementById('messengeWin').replaceWith(dialogContainer);
+    }
+
+    dialogContainer = document.getElementById('messengeWin');
+    var sub = document.getElementById('subtext');
+
+    if (sub) {
+        sub.classList.add("d-none");
+    }
+
+    Array.from(Message).forEach(Mes => CreateMessage(Mes));
+
+};
+function UpdateMess(Username) {
+    var messange = document.getElementById('messengeWin');
+    while (messange.firstChild) {
+        messange.removeChild(messange.firstChild);
+    }
+    var thisFriendMessanges = [];
+    Array.from(Messages).forEach(Mess => {
+        for (var i = 0; userFriends.length > i; i++) {
+            if (userFriends[i].Name === Username) {
+                if (userFriends[i].Id === Mess.ReceiverId || userFriends[i].Id === Mess.SenderId) {
+                    if (currentUser.Id === Mess.ReceiverId || currentUser.Id === Mess.SenderId) {
+                        thisFriendMessanges.push(Mess);
+                    }
+
+                }
+
+            }
+        }
+    })
+    initMessange(thisFriendMessanges);
+};

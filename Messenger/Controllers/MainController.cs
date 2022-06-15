@@ -41,8 +41,7 @@ namespace Messenger.Controllers
                            select m.DialogId).ToList();
             ViewBag.Dialogs = dialogs.Distinct().ToList();
 
-            ViewBag.FriendList = GetFriendNames();
-
+            ViewBag.FriendList = GetFriends();
 
             return View();
         }
@@ -60,8 +59,8 @@ namespace Messenger.Controllers
             _user = db.Users.FirstOrDefault(p => p.Login == login && p.Password == password);
         }
 
-        // Получить имена пользователей, с которыми есть диалоги
-        public List<string> GetFriendNames()
+        // Получить клиентов, с которыми есть диалоги
+        List<Client> GetFriends()
         {
             var senderList = (from m in _messages
                               where _user.Id != m.SenderId
@@ -74,10 +73,11 @@ namespace Messenger.Controllers
             var friendsId = (senderList.Concat(receiverList)).Distinct();
 
 
+
             return (from u in GetAllUser()
                     from f in friendsId
                     where u.Id == f
-                    select u.Name).ToList();
+                    select new Client(u.Id, u.Name)).ToList();
         }
 
         // Получить всех пользователей

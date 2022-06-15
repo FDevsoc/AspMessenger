@@ -12,7 +12,7 @@
             <div class="row justify-content-between">
                 <div class="col-12 col-md-4 d-md-block friend-m " id="friendMenu">
                     <form class="pt input-group dropdown mb-3 search">
-                        <input type="search"  class="form-control border-bottom border-2 border-primary" placeholder="Найти собеседника:" aria-label="Search"
+                        <input type="search" class="form-control border-bottom border-2 border-primary" placeholder="Найти собеседника:" aria-label="Search"
                           aria-describedby="search-addon" />
                         <button class="btn  border-0 dropdown-toggle-split" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
                           <img src="img/search.png" width="20" height="20" alt="Найти"/>
@@ -27,7 +27,7 @@
                             <div class="cont" id="subtext">
                               <p class="mb f-text text-w">Нет созданных</p>
                               <p class="f-text text-w">диалогов</p>
-                          </div>
+                            </div>
                         } 
                         else
                         {
@@ -35,7 +35,7 @@
                             {
                                 <div class="card userCard text-white bg-dark shadow">
                                   <div class="card-body rey">
-                                    <h5 class="card-title">@friend</h5>
+                                    <h5 class="card-title">@friend.Name</h5>
                                   </div>
                                 </div>
                             }
@@ -43,7 +43,7 @@
                       </div>
                       <div class="user-info border-top border-2 border-primary">
                           <div class="row g-0 info-btn">
-                            <div class="col-10 col-md-9 user-name text-w">@ViewData["User"]</div>
+                            <div id="username" class="col-10 col-md-9 user-name text-w">@ViewData["User"]</div>
                             <div class="col-1 col-md-1 exit-btn-cont ">
                               <a href="Home" class="btn exit-btn">
                                   <img src="/img/exit.png" width="30" height="30" alt="Выйти"/>
@@ -100,8 +100,9 @@
                 </div>
             </div>
         </div>
-    <script src="/js/main.js"></script>
+    <script src="/js/signalr/dist/browser/signalr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>
 

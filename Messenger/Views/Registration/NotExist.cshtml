@@ -1,0 +1,66 @@
+﻿@model Messenger.Models.User
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Мессенджер</title>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container" class="form-container">
+            <form asp-action="Index" asp-controller="Registration" id="auth-form" class="form-container__form" method="post">
+                <fieldset id="username" class="form-container__input-field">
+                    <legend id="username-legend" class="form-container_fz error">Никнейм (Пользователь уже существует)</legend>
+                    <input asp-for="Name" id="username-data" class="form-container__field" 
+                        required
+                        pattern="[A-Za-zА]+$"
+                        minlength="1" maxlength="24" 
+                        placeholder="Ваш никнейм" 
+                        name="name"
+                        type="text"
+                    >
+                </fieldset>
+                <fieldset class="form-container__input-field">
+                    <legend asp-for="Login" id="login-legend" class="form-container_fz error">Логин (Пользователь уже существует)</legend>
+                    <input asp-for="Login" id="login" class="form-container__field" 
+                        required 
+                        pattern="^[a-zA-Z0-9][a-zA-Z0-9]{3,16}$"
+                        minlength="4" maxlength="16" 
+                        placeholder="Ваш логин" 
+                        name="login"
+                    >
+                </fieldset>
+                <fieldset class="form-container__input-field">
+                    <legend asp-for="Password" id="password-legend" class="form-container_fz">Пароль</legend>
+                    <input asp-for="Password" id="pass" class="form-container__field" 
+                        required
+                        type="password"
+                        minlength="8" maxlength="24" 
+                        pattern="^[a-zA-Zа-яА-Я0-9][a-zA-Zа-яА-Я0-9]{7,24}$"
+                        placeholder="Пароль" 
+                        name="password"
+                    >
+                </fieldset>
+                <fieldset id="repeat-pass" class="form-container__input-field">
+                    <legend id="rep-pass-legend" class="form-container_fz">Повторите пароль</legend>
+                    <input id="repeat-pass-data" class="form-container__field"
+                        type="password"
+                        placeholder="Повторите пароль" 
+                        name="passwordConfirm"
+                    >
+                </fieldset>
+                <div class="form-container__btn btn">
+                    <a href="Authorization" id="additional-button" class="btn__item">Вход</a>
+                    <input id="submit-button" class="btn__item" value="Создать аккаунт" type="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

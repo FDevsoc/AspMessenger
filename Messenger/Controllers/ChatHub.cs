@@ -15,9 +15,7 @@ namespace Messenger.Controllers
 
         public async Task GetData(string userName)
         {
-            var currentClient = (from u in db.Users
-                                where u.Name == userName
-                                select new Client(u.Id, u.Name)).FirstOrDefault();
+            var currentClient = GetClient(userName);
 
             var messages = (from m in db.Messages
                             where currentClient.Id == m.SenderId || currentClient.Id == m.ReceiverId
@@ -53,6 +51,28 @@ namespace Messenger.Controllers
             db.SaveChanges();
 
             await GetData(currentClient.Name);
+        }
+
+        public async Task FindUser(string currentUser, string findFriendName)
+        {
+            var client = GetClient(findFriendName);
+            if (client != null)
+            {
+
+            }
+
+            await Clients.Client(Context.ConnectionId).SendAsync("GetFriend", currentClient, messages, friendList);
+        }
+
+        Client GetClient(string userName)
+        {
+            Client? client;
+
+            client = (from u in db.Users
+                      where u.Name == userName
+                      select new Client(u.Id, u.Name)).FirstOrDefault();
+
+            return client;
         }
 
         List<Client> GetFriends(int userId, List<Message> messages)

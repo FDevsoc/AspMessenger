@@ -2,6 +2,7 @@
 var currentUser;
 var messages = [];
 var userFriends = [];
+var newUserFriend = [];
 
 // Название карточки (никнейм собеседника)
 var cardDialogName;
@@ -23,13 +24,17 @@ const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl("MainChat")
     .build();
 
-// Получение сообщения от сервера
+// Получение сообщениий от сервера
 hubConnection.on('GetData', function (currentClient, messageList, friendList) {
     currentUser = currentClient;
     messages = messageList;
     userFriends = friendList;
 
     showDialogWindow(cardDialogName);
+});
+
+hubConnection.on('GetFriend', function (newFriend) {
+    newUserFriend.
 });
 
 // Отправка сообщения на сервер
@@ -39,6 +44,21 @@ function GetUserData() {
 }
 
 hubConnection.start();
+
+
+
+
+
+document.getElementById('dropdownMenu2').onclick = findUser;
+
+function findUser() {
+    let findField = document.getElementById('searchBox').value;
+    hubConnection.invoke("FindUser", findField);
+}
+
+
+
+
 
 
 if (dialogCardsContainer) {
@@ -77,6 +97,8 @@ if (dialogCardsContainer) {
                     cardBodyClassList.remove("bushcard");
                 }
             }
+
+            setTimeout(scrollDown, 200);
         });
     });
 }
@@ -102,7 +124,11 @@ backBtn.onclick = () => {
 // Кнопка отправки сообщения
 var sendBtn = document.getElementById('sendMessange');
 // Событие клика на кнопку отправки сообщения
-sendBtn.addEventListener('click', sendMessange);
+
+sendBtn.addEventListener('click', () => {
+    sendMessange();
+    setTimeout(scrollDown, 200);
+});
 
 
 // Обработчик события отправки сообщения
@@ -122,6 +148,15 @@ function sendMessange() {
         }
     })
 
+    if (receiverId == null) {
+        Array.from(newUserFriends).forEach(userFriend => {
+            if (userFriend.name === document.getElementById('dialog-info').innerHTML) {
+                receiverId = userFriend.id;
+                reciverName = userFriend.name;
+            }
+        })
+    }
+
     // Формирование объекта сообщения
     message = {
         Id: 0,
@@ -140,8 +175,8 @@ function sendMessange() {
 }
 
 
-async function scrollDown() {
-    await setTimeout(document.getElementById('messengeWin').scrollIntoView(false), 200);
+function scrollDown() {
+    document.getElementById('messengeWin').scrollIntoView(false);
 }
 
 

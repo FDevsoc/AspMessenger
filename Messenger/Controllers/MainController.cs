@@ -13,7 +13,9 @@ namespace Messenger.Controllers
     {
         ApplicationContext db;
         User? _user;
+
         List<Message> _messages;
+
 
         public MainController(ApplicationContext context)
         {

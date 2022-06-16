@@ -42,6 +42,7 @@ namespace Messenger.Controllers
                 await db.SaveChangesAsync();
 
                 HttpContext.Response.Cookies.Append("User", $"{user.Login} {user.Password}");
+
                 return RedirectToAction("Index", "Main");
             }
             return NotExist();

@@ -36,12 +36,13 @@ namespace Messenger.Controllers
 
             if (message.DialogId == 0)
             {
-                var newDialog = new Dialog(0, $"{message.SenderId} - {message.ReceiverId}");
+                var newDialog = new Dialog(0, $"{message.SenderId} {message.ReceiverId}");
+
                 db.Dialogs.Add(newDialog);
                 db.SaveChanges();
 
                 message.DialogId = (from d in db.Dialogs
-                                   where d.Name == $"{message.SenderId} - {message.ReceiverId}"
+                                   where d.Name == $"{message.SenderId} {message.ReceiverId}"
                                    select d.Id).FirstOrDefault();
             }
 
@@ -53,7 +54,7 @@ namespace Messenger.Controllers
             await GetData(currentClient.Name);
         }
 
-        public async Task FindUser(string currentUser, string findFriendName)
+        public async Task FindUser(string findFriendName)
         {
             var client = GetClient(findFriendName);
             if (client != null)
@@ -61,7 +62,7 @@ namespace Messenger.Controllers
 
             }
 
-            await Clients.Client(Context.ConnectionId).SendAsync("GetFriend", currentClient, messages, friendList);
+            await Clients.Client(Context.ConnectionId).SendAsync("FindUser", client);
         }
 
         Client GetClient(string userName)

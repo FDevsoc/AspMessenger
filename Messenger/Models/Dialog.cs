@@ -4,14 +4,12 @@
     {
         public int Id { get; set; }
 
-        public string? Name { get; set; }
-
-        public Dialog() {}
+        public string Name { get; set; }
 
         public Dialog(int id, string name)
         {
             Id = id;
-            Name = Name;
+            Name = name;
         }
     }
 }

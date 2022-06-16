@@ -2,7 +2,8 @@
 var currentUser;
 var messages = [];
 var userFriends = [];
-var newUserFriend = [];
+var newUserFriends = [];
+var foundUser;
 
 // Название карточки (никнейм собеседника)
 var cardDialogName;
@@ -13,6 +14,7 @@ var cardDialog;
 var friendMenu = document.getElementById('friendMenu');
 var dialogWindow = document.getElementById('DialogWin');
 var messageInputField = document.getElementById('usertext');
+var listItem = document.getElementById('findUser');
 
 // Контейнер для карточек сообщений 
 var messageCardsContainer;
@@ -33,8 +35,9 @@ hubConnection.on('GetData', function (currentClient, messageList, friendList) {
     showDialogWindow(cardDialogName);
 });
 
-hubConnection.on('GetFriend', function (newFriend) {
-    newUserFriend.
+hubConnection.on('FindUser', function (newFriend) {
+    foundUser = newFriend;
+    addFindUserInList(foundUser);
 });
 
 // Отправка сообщения на сервер
@@ -49,6 +52,7 @@ hubConnection.start();
 
 
 
+
 document.getElementById('dropdownMenu2').onclick = findUser;
 
 function findUser() {
@@ -57,11 +61,38 @@ function findUser() {
 }
 
 
+function addFindUserInList(foundUser) {
+    if (foundUser == null) listItem.innerText = "Ничего не найдено";
+
+    listItem.innerText = foundUser.name;
+}
+
+
+listItem.onclick = () => {
+    if (listItem.innerText == "Ничего не найдено") return;
+
+    if (userFriends.find(u => u.id == foundUser.id)) return;
+
+    document.getElementById('dialog').innerHTML += `
+        <div class="card userCard text-white bg-dark shadow">
+          <div class="card-body rey">
+            <h5 class="card-title">${foundUser.name}</h5>
+          </div>
+        </div>
+    `;
+    dialogCardsContainer = document.getElementsByClassName('userCard');
+
+    initDialog();
+
+    document.getElementById('subtext').classList.add("d-none");
+    newUserFriends.push(foundUser);
+}
 
 
 
+function initDialog() {
+    if (!dialogCardsContainer) return;
 
-if (dialogCardsContainer) {
     // Перебор карточек и добавление каждой прослушки
     Array.from(dialogCardsContainer).forEach(cardDialogItem => {
         cardDialogItem.addEventListener('click', function () {
@@ -103,6 +134,7 @@ if (dialogCardsContainer) {
     });
 }
 
+initDialog();
 
 // Метод отображения окна сообщений
 function showDialogWindow(friendName) {
@@ -126,13 +158,13 @@ var sendBtn = document.getElementById('sendMessange');
 // Событие клика на кнопку отправки сообщения
 
 sendBtn.addEventListener('click', () => {
-    sendMessange();
+    sendMessage();
     setTimeout(scrollDown, 200);
 });
 
 
 // Обработчик события отправки сообщения
-function sendMessange() {
+function sendMessage() {
     if (!messageInputField.value) return;
 
     // Объект нового сообщения

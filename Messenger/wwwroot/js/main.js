@@ -15,6 +15,8 @@ var friendMenu = document.getElementById('friendMenu');
 var dialogWindow = document.getElementById('DialogWin');
 var messageInputField = document.getElementById('usertext');
 var listItem = document.getElementById('findUser');
+let container = document.getElementById('dialog');
+var cardUser;
 
 // Контейнер для карточек сообщений 
 var messageCardsContainer;
@@ -32,14 +34,42 @@ hubConnection.on('GetData', function (currentClient, messageList, friendList) {
     messages = messageList;
     userFriends = friendList;
 
-    showDialogWindow(cardDialogName);
-});
+    container = document.getElementById('dialog');
 
+    if (friendList.length > cardUser) {
+        createDialogs(friendList);
+    }
+    dialogCardsContainer = document.getElementsByClassName('userCard');
+    showDialogWindow(cardDialogName);
+
+});
 hubConnection.on('FindUser', function (newFriend) {
     foundUser = newFriend;
     addFindUserInList(foundUser);
 });
+function createDialogs(userFriends) {
+    cardUser += 1;
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+    for (var i = 0; userFriends.length > i; i++) {
+        var card = document.createElement('div');
+        card.className = 'card userCard text-white bg-dark shadow';
 
+        var body = document.createElement('div');
+        body.className = 'card-body rey'
+
+        var text = document.createElement('h5');
+        text.className = 'card-title';
+        text.innerText = userFriends[i].name;
+
+        body.appendChild(text);
+        card.appendChild(body);
+        container.appendChild(card);
+    }
+    dialogCardsContainer = document.getElementsByClassName('userCard');
+    initDialog();
+}
 // Отправка сообщения на сервер
 function GetUserData() {
     let userName = document.getElementById("username");
@@ -48,10 +78,12 @@ function GetUserData() {
 
 hubConnection.start();
 
+document.onload = SetDataContainer();
 
-
-
-
+function SetDataContainer() {
+    cardUser = document.getElementsByClassName('userCard').length;
+    setTimeout(GetUserData, 300);
+}
 
 document.getElementById('dropdownMenu2').onclick = findUser;
 
@@ -83,11 +115,11 @@ listItem.onclick = () => {
     dialogCardsContainer = document.getElementsByClassName('userCard');
 
     initDialog();
+    if (document.getElementById('subtext')) document.getElementById('subtext').classList.add("d-none");
 
-    document.getElementById('subtext').classList.add("d-none");
     newUserFriends.push(foundUser);
+    GetUserData();
 }
-
 
 
 function initDialog() {
@@ -250,8 +282,11 @@ function initMessages(messages) {
     if (messageCardsContainer) document.getElementById('messengeWin').replaceWith(messageCardsContainer);
     messageCardsContainer = document.getElementById('messengeWin');
 
-    let dialogMenuPlaceholder = document.getElementById('subtext');
-    if (dialogMenuPlaceholder) dialogMenuPlaceholder.classList.add("d-none");
+    if (userFriends > 0) {
+        let dialogMenuPlaceholder = document.getElementById('subtext');
+        if (dialogMenuPlaceholder) dialogMenuPlaceholder.classList.add("d-none");
+    }
+
 
     Array.from(messages).forEach(message => createMessage(message));
 };

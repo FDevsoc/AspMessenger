@@ -8,6 +8,8 @@ namespace Messenger.Controllers
     {
         public IActionResult Index()
         {
+            HttpContext.Response.Cookies.Delete("User");
+
             return View();
         }
 

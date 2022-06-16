@@ -1,12 +1,13 @@
 ﻿namespace Messenger.Models
 {
-    public class Dialog
+    // Упрощенная модель пользователя
+    public class Client
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public Dialog(int id, string name)
+        public Client(int id, string name)
         {
             Id = id;
             Name = name;

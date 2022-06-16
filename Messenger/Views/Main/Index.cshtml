@@ -68,17 +68,7 @@
                         </div>
                       </div>
                       <div class="col-12 col-md-12 dialog-body">
-                        <div id="messengeWin" class="MessagesWin d-flex flex-column">
-                            @foreach (var message in @ViewBag.Messages)
-                            {
-                                <div class="card mb-3 text-white senderBox bg-transp">
-                                    <div class="card-body reqsforChat">
-                                        <div class="card-text text-white text-start">@message.Text</div>
-                                        <div class="label text-end labelData small">@message.SendDate.ToShortTimeString()</div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
+                        <div id="messengeWin" class="MessagesWin d-flex flex-column"></div>
                       </div>
                       <div class="col-12 col-md-12 border-2 border-top border-primary">
                         <div class="container footChat">

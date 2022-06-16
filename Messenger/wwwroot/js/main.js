@@ -107,6 +107,8 @@ sendBtn.addEventListener('click', sendMessange);
 
 // Обработчик события отправки сообщения
 function sendMessange() {
+    if (!messageInputField.value) return;
+
     // Объект нового сообщения
     let message;
     // Id и имя пользователя которому отправляется сообщение
@@ -120,19 +122,17 @@ function sendMessange() {
         }
     })
 
-    if (messageInputField.value) {
-        // Формирование объекта сообщения
-        message = {
-            Id: 0,
-            Text: messageInputField.value,
-            SendDate: new Date(),
-            SenderId: currentUser.id,
-            ReceiverId: receiverId,
-            DialogId: 0
-        };
+    // Формирование объекта сообщения
+    message = {
+        Id: 0,
+        Text: messageInputField.value,
+        SendDate: new Date(),
+        SenderId: currentUser.id,
+        ReceiverId: receiverId,
+        DialogId: 0
+    };
 
-        hubConnection.invoke("SendData", currentUser, message);
-    }
+    hubConnection.invoke("SendData", currentUser, message);
 
     // Очистка поля ввода сообщения после нажатия на кнопку
     messageInputField.value = "";
@@ -140,36 +140,16 @@ function sendMessange() {
 }
 
 
+async function scrollDown() {
+    await setTimeout(document.getElementById('messengeWin').scrollIntoView(false), 200);
+}
+
+
 //Функция создания карточек сообщений 
 function createMessage(message) {
-    if (currentUser.id === message.senderId) {
+    function refreshHtmlMessage(cardClasses, footerClass = '') {
         let card = document.createElement('div');
-        card.className = 'card mb-3 text-white senderBox bg-primary ';
-
-        let cardBody = document.createElement('div');
-        cardBody.className = 'card-body';
-
-        let text = document.createElement('div');
-        text.innerText = message.text;
-        text.className = 'card-text text-start ';
-
-        let footer = document.createElement('div');
-
-        // Формат даты
-        if (message.sendDate.length > 5) {
-            message.sendDate = message.sendDate.substring(11, 16);
-        }
-
-        footer.innerText = message.sendDate;
-        footer.className = 'label text-end labelData small ';
-
-        cardBody.appendChild(text);
-        cardBody.appendChild(footer);
-        card.appendChild(cardBody);
-        messageCardsContainer.appendChild(card);
-    } else {
-        let card = document.createElement('div');
-        card.className = 'card mb-3 text-white bg-dark reciverBox ';
+        card.className = `card mb-3 text-white ${cardClasses}`;
 
         let cardBody = document.createElement('div');
         cardBody.className = 'card-body';
@@ -178,16 +158,23 @@ function createMessage(message) {
         text.innerText = message.text;
         text.className = 'card-text text-start';
 
+        let footer = document.createElement('div');
+
         if (message.sendDate.length > 5) message.sendDate = message.sendDate.substring(11, 16);
 
-        let footer = document.createElement('div');
         footer.innerText = message.sendDate;
-        footer.className = 'label text-muted text-end labelData small';
+        footer.className = `label text-end labelData small ${footerClass}`;
 
         cardBody.appendChild(text);
         cardBody.appendChild(footer);
         card.appendChild(cardBody);
         messageCardsContainer.appendChild(card);
+    }
+
+    if (currentUser.id === message.senderId) {
+        refreshHtmlMessage('bg-primary senderBox')
+    } else {
+        refreshHtmlMessage('bg-dark reciverBox', 'text-muted');
     }
 };
 
